@@ -10,7 +10,7 @@
 
   <artifactId>annotation-indexer</artifactId>
   <name>annotation-indexer</name>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <description>
     Creates index of annotations.
   </description>
@@ -29,10 +29,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/annotation-indexer-1.0</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/annotation-indexer-1.0</developerConnection>
-    <url>https://hudson.dev.java.net/source/browse/hudson/tags/annotation-indexer-1.0</url>
-  </scm>
 </project>
