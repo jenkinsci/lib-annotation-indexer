@@ -1,0 +1,118 @@
+package org.jvnet.hudson.annotation_indexer;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * @author Kohsuke Kawaguchi
+ */
+public class Index {
+    /**
+     * Lists up all the elements annotated by the given annotation.
+     */
+    public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
+        if (!type.isAnnotationPresent(Indexed.class))
+            throw new IllegalArgumentException(type+" doesn't have @Indexed");
+
+        final Set<String> ids = new TreeSet<String>();
+
+        final Enumeration<URL> res = cl.getResources("META-INF/annotations/"+type.getName());
+        while (res.hasMoreElements()) {
+            URL url = res.nextElement();
+            BufferedReader r = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            String line;
+            while ((line=r.readLine())!=null)
+                ids.add(line);
+        }
+
+        return new Iterable<AnnotatedElement>() {
+            public Iterator<AnnotatedElement> iterator() {
+                return new Iterator<AnnotatedElement>() {
+                    /**
+                     * Next element to return.
+                     */
+                    private AnnotatedElement next;
+
+                    private Iterator<String> iditr = ids.iterator();
+
+                    private List<AnnotatedElement> lookaheads = new LinkedList<AnnotatedElement>();
+
+                    public boolean hasNext() {
+                        fetch();
+                        return next!=null;
+                    }
+
+                    public AnnotatedElement next() {
+                        fetch();
+                        AnnotatedElement r = next;
+                        next = null;
+                        return r;
+                    }
+
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    private void fetch() {
+                        while (next==null) {
+                            if (!lookaheads.isEmpty()) {
+                                next = lookaheads.remove(0);
+                                return;
+                            }
+                            try {
+                                if (!iditr.hasNext())   return;
+                                String name = iditr.next();
+                                if (name.endsWith("()")) {
+                                    // method
+                                    int idx = name.lastIndexOf('#');
+                                    String className = name.substring(0, idx);
+                                    String methodName = name.substring(idx+1,name.length()-2);
+
+                                    Class<?> c = cl.loadClass(className);
+                                    for (Method m : c.getDeclaredMethods()) {
+                                        // this means we don't correctly handle
+                                        if (m.getName().equals(methodName) && m.isAnnotationPresent(type))
+                                            lookaheads.add(m);
+                                    }
+                                } else
+                                if (name.contains("#")) {
+                                    // field
+                                    int idx = name.lastIndexOf('#');
+                                    String className = name.substring(0, idx);
+                                    String fieldName = name.substring(idx+1,name.length()-2);
+
+                                    Class<?> c = cl.loadClass(className);
+                                    next = c.getDeclaredField(fieldName);
+                                    return;
+                                } else {
+                                    // class name
+                                    next = cl.loadClass(name);
+                                    return;
+                                }
+                            } catch (ClassNotFoundException e) {
+                                LOGGER.log(Level.FINE, "Failed to load a class",e);
+                            } catch (NoSuchFieldException e) {
+                                LOGGER.log(Level.FINE, "Failed to find a field",e);
+                            }
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    private static final Logger LOGGER = Logger.getLogger(Index.class.getName());
+}
