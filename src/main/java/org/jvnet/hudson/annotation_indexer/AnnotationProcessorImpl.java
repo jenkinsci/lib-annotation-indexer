@@ -28,8 +28,8 @@ import javax.annotation.processing.SupportedSourceVersion;
 import static javax.lang.model.SourceVersion.RELEASE_6;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import static javax.tools.StandardLocation.CLASS_OUTPUT;
@@ -68,9 +68,9 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
          */
         final String annotationName;
         /**
-         * Strings that designate where they are used
+         * Strings that designate FQCNs where annotations are used, either on a class or its members.
          */
-        final Set<String> usages = new TreeSet<String>();
+        final Set<String> classes = new TreeSet<String>();
         /**
          * Keeps track of elements that has the annotation.
          */
@@ -83,19 +83,19 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         void add(Element elt) {
             originatingElements.add(elt);
 
+            TypeElement t;
             switch (elt.getKind()) {
             case CLASS:
-                usages.add(processingEnv.getElementUtils().getBinaryName((TypeElement) elt).toString());
-                return;
+                t = (TypeElement) elt;
+                break;
             case METHOD:
             case FIELD:
-                String className = processingEnv.getElementUtils().getBinaryName((TypeElement) elt.getEnclosingElement()).toString();
-                String memberName = elt.getSimpleName().toString();
-                usages.add(className+'#'+memberName+(elt.getKind()== ElementKind.METHOD ? "()" : ""));
-                return;
+                t = (TypeElement) elt.getEnclosingElement();
+                break;
             default:
                 throw new AssertionError(elt.getKind());
             }
+            classes.add(getElementUtils().getBinaryName(t).toString());
         }
 
         String getIndexFileName() {
@@ -132,7 +132,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
                 PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(),"UTF-8"));
                 try {
-                    for (String el : usages)
+                    for (String el : classes)
                         w.println(el);
                 } finally {
                     w.close();
@@ -143,17 +143,15 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         }
     }
 
+    private Elements getElementUtils() {
+        return processingEnv.getElementUtils();
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver()) {
+        if (roundEnv.processingOver())
             return false;
-        }
-        for (Element indexable : roundEnv.getElementsAnnotatedWith(Indexed.class)) {
-            Retention retention = indexable.getAnnotation(Retention.class);
-            if (retention == null || retention.value() != RetentionPolicy.SOURCE) {
-                processingEnv.getMessager().printMessage(Kind.WARNING, "should be marked @Retention(RetentionPolicy.SOURCE)", indexable);
-            }
-        }
+        
         // map from indexable annotation names, to actual uses
         Map<String,Use> output = new HashMap<String,Use>();
         scan(annotations, roundEnv, output);
@@ -163,8 +161,8 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
     }
 
     private AnnotationMirror findAnnotationOn(Element e, String name) {
-        for (AnnotationMirror a : processingEnv.getElementUtils().getAllAnnotationMirrors(e))
-            if (processingEnv.getElementUtils().getBinaryName((TypeElement) a.getAnnotationType().asElement()).contentEquals(name))
+        for (AnnotationMirror a : getElementUtils().getAllAnnotationMirrors(e))
+            if (getElementUtils().getBinaryName((TypeElement) a.getAnnotationType().asElement()).contentEquals(name))
                 return a;
         return null;
     }
@@ -176,7 +174,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             if (indexed == null)
                 continue;   // not indexed
 
-            String annName = processingEnv.getElementUtils().getBinaryName(ann).toString();
+            String annName = getElementUtils().getBinaryName(ann).toString();
             Use o = output.get(annName);
             if (o==null)
                 output.put(annName,o=new Use(annName));

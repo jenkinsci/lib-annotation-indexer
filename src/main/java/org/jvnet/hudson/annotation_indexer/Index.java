@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Enumeration;
@@ -72,41 +73,28 @@ public class Index {
                                 next = lookaheads.remove(0);
                                 return;
                             }
+
+                            if (!iditr.hasNext())   return;
+                            String name = iditr.next();
+
                             try {
-                                if (!iditr.hasNext())   return;
-                                String name = iditr.next();
-                                if (name.endsWith("()")) {
-                                    // method
-                                    int idx = name.lastIndexOf('#');
-                                    String className = name.substring(0, idx);
-                                    String methodName = name.substring(idx+1,name.length()-2);
+                                Class<?> c = cl.loadClass(name);
 
-                                    Class<?> c = cl.loadClass(className);
-                                    for (Method m : c.getDeclaredMethods()) {
-                                        // this means we don't correctly handle
-                                        if (m.getName().equals(methodName) && m.isAnnotationPresent(type))
-                                            lookaheads.add(m);
-                                    }
-                                } else
-                                if (name.contains("#")) {
-                                    // field
-                                    int idx = name.lastIndexOf('#');
-                                    String className = name.substring(0, idx);
-                                    String fieldName = name.substring(idx+1,name.length()-2);
-
-                                    Class<?> c = cl.loadClass(className);
-                                    next = c.getDeclaredField(fieldName);
-                                    return;
-                                } else {
-                                    // class name
-                                    next = cl.loadClass(name);
-                                    return;
-                                }
+                                if (c.isAnnotationPresent(type))
+                                    lookaheads.add(c);
+                                listAnnotatedElements(c.getDeclaredMethods());
+                                listAnnotatedElements(c.getDeclaredFields());
                             } catch (ClassNotFoundException e) {
-                                LOGGER.log(Level.FINE, "Failed to load a class",e);
-                            } catch (NoSuchFieldException e) {
-                                LOGGER.log(Level.FINE, "Failed to find a field",e);
+                                LOGGER.log(Level.FINE, "Failed to load: "+name,e);
                             }
+                        }
+                    }
+
+                    private void listAnnotatedElements(AnnotatedElement[] elements) {
+                        for (AnnotatedElement m : elements) {
+                            // this means we don't correctly handle
+                            if (m.isAnnotationPresent(type))
+                                lookaheads.add(m);
                         }
                     }
                 };
