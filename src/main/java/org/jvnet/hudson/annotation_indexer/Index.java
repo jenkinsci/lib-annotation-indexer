@@ -22,6 +22,22 @@ import java.util.logging.Logger;
  */
 public class Index {
     /**
+     * Lists up all the elements annotated by the given annotation and of the given {@link AnnotatedElement} subtype.
+     */
+    public static <T extends AnnotatedElement> Iterable<T> list(Class<? extends Annotation> type, ClassLoader cl, final Class<T> subType) throws IOException {
+        final Iterable<AnnotatedElement> base = list(type,cl);
+        return new Iterable<T>() {
+            public Iterator<T> iterator() {
+                return new FilterIterator(base.iterator()) {
+                    protected boolean filter(Object o) {
+                        return subType.isInstance(o);
+                    }
+                };
+            }
+        };
+    }
+
+    /**
      * Lists up all the elements annotated by the given annotation.
      */
     public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
