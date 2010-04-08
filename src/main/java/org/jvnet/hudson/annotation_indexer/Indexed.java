@@ -27,6 +27,8 @@ import java.lang.annotation.Target;
 /**
  * Marks annotations that should be indexed during compilation.
  *
+ * The annotations indexed this way can be later enumerated efficiently with {@link Index}.
+ *
  * @author Kohsuke Kawaguchi
  */
 @Documented
