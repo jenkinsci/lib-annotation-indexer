@@ -86,6 +86,9 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             TypeElement t;
             switch (elt.getKind()) {
             case CLASS:
+            case INTERFACE:
+            case ANNOTATION_TYPE:
+            case ENUM:
                 t = (TypeElement) elt;
                 break;
             case METHOD:
