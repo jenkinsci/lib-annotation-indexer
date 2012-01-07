@@ -9,7 +9,7 @@
 
   <artifactId>annotation-indexer</artifactId>
   <name>annotation-indexer</name>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
   <description>
     Creates index of annotations.
   </description>
