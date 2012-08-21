@@ -77,6 +77,11 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
         private Use(String annotationName) {
             this.annotationName = annotationName;
+            try {
+                classes.addAll(loadExisting());
+            } catch (IOException x) {
+                processingEnv.getMessager().printMessage(Kind.ERROR, x.toString());
+            }
         }
 
         void add(Element elt) {

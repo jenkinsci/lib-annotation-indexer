@@ -34,6 +34,23 @@ public class AnnotationProcessorImplTest {
         assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
+    @Test public void incremental() {
+        Compilation compilation = new Compilation();
+        compilation.addSource("some.pkg.Stuff").
+                addLine("package some.pkg;").
+                addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
+        compilation.doCompile(null, "-source", "6");
+        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        compilation = new Compilation(compilation);
+        compilation.addSource("some.pkg.MoreStuff").
+                addLine("package some.pkg;").
+                addLine("@" + A.class.getCanonicalName() + " public class MoreStuff {}");
+        compilation.doCompile(null, "-source", "6");
+        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals("some.pkg.MoreStuff\nsome.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+    }
+
     @Indexed @Retention(RetentionPolicy.RUNTIME) @Inherited public @interface B {}
     @B public static abstract class Super {}
     @Test public void subclass() {
