@@ -1,6 +1,8 @@
 package org.jvnet.hudson.annotation_indexer;
 
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import net.java.dev.hickory.testing.Compilation;
 import org.junit.Test;
@@ -12,7 +14,7 @@ public class AnnotationProcessorImplTest {
         Compilation compilation = new Compilation();
         compilation.addSource("some.api.A").
                 addLine("package some.api;").
-                addLine("@" + Indexed.class.getCanonicalName() + " public @interface A {}");
+                addLine("@" + Indexed.class.getCanonicalName() + " @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME) public @interface A {}");
         compilation.addSource("some.pkg.Stuff").
                 addLine("package some.pkg;").
                 addLine("@some.api.A public class Stuff {}");
@@ -21,7 +23,7 @@ public class AnnotationProcessorImplTest {
         assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/some.api.A"));
     }
 
-    @Indexed public @interface A {}
+    @Indexed @Retention(RetentionPolicy.RUNTIME) public @interface A {}
     @Test public void separate() {
         Compilation compilation = new Compilation();
         compilation.addSource("some.pkg.Stuff").
@@ -32,7 +34,7 @@ public class AnnotationProcessorImplTest {
         assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
-    @Indexed @Inherited public @interface B {}
+    @Indexed @Retention(RetentionPolicy.RUNTIME) @Inherited public @interface B {}
     @B public static abstract class Super {}
     @Test public void subclass() {
         Compilation compilation = new Compilation();

@@ -177,6 +177,13 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             if (indexed == null)
                 continue;   // not indexed
 
+            AnnotationMirror retention = findAnnotationOn(ann, Retention.class.getName());
+            if (retention == null) {
+                processingEnv.getMessager().printMessage(Kind.WARNING, "Specify @Retention(RUNTIME)", ann);
+            } else {
+                // XXX check that it is RUNTIME?
+            }
+
             String annName = getElementUtils().getBinaryName(ann).toString();
             Use o = output.get(annName);
             if (o==null)
