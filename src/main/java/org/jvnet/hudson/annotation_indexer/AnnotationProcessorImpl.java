@@ -82,7 +82,8 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 t = (TypeElement) elt.getEnclosingElement();
                 break;
             default:
-                throw new AssertionError(elt.getKind());
+//                throw new AssertionError(elt.getKind());
+                return;
             }
             classes.add(getElementUtils().getBinaryName(t).toString());
         }
@@ -138,7 +139,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (roundEnv.processingOver())
+        if (roundEnv.processingOver() || roundEnv.errorRaised())
             return false;
         
         // map from indexable annotation names, to actual uses
