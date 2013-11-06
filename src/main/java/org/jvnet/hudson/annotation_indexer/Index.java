@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -102,6 +100,8 @@ public class Index {
                                 listAnnotatedElements(c.getDeclaredFields());
                             } catch (ClassNotFoundException e) {
                                 LOGGER.log(Level.FINE, "Failed to load: "+name,e);
+                            } catch (LinkageError x) {
+                                LOGGER.log(Level.WARNING, "Failed to load " + name, x);
                             }
                         }
                     }

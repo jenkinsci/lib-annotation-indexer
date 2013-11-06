@@ -1,9 +1,15 @@
 package org.jvnet.hudson.annotation_indexer;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.Iterator;
 import net.java.dev.hickory.testing.Compilation;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -63,6 +69,32 @@ public class AnnotationProcessorImplTest {
         /* XXX #7188605 currently broken on JDK 6; perhaps need to use a ElementScanner6 on roundEnv.rootElements whose visitType checks for annotations
         assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + B.class.getName()));
         */
+    }
+
+    @Indexed @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) public @interface C {}
+    public interface Inaccessible {}
+    public static class Problematic {@C public Inaccessible bad() {return null;}}
+    public static class Fine {@C public String good() {return null;}}
+    public static class StillOK {@C public void whatever() {}}
+    @Test public void linkageErrorRobustness() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[] {Index.class.getProtectionDomain().getCodeSource().getLocation(), AnnotationProcessorImplTest.class.getProtectionDomain().getCodeSource().getLocation()}, AnnotationProcessorImplTest.class.getClassLoader().getParent()) {
+            @Override protected Class<?> findClass(String name) throws ClassNotFoundException {
+                if (name.endsWith("$Inaccessible")) {
+                    throw new ClassNotFoundException("this is intentionally denied");
+                }
+                return super.findClass(name);
+            }
+        };
+        // Have to call Index.list using reflection because we have to pass C.class reflectively (otherwise it is not present on the marked classes), and C.class has to have Indexed.class:
+        Method indexList = cl.loadClass(Index.class.getName()).getMethod("list", Class.class, ClassLoader.class, Class.class);
+        @SuppressWarnings("unchecked") Iterator<Method> it = ((Iterable<Method>) indexList.invoke(null, cl.loadClass(C.class.getName()), cl, Method.class)).iterator();
+        assertTrue(it.hasNext());
+        Method m = it.next();
+        assertEquals("good", m.getName());
+        assertTrue(it.hasNext());
+        m = it.next();
+        assertEquals("whatever", m.getName());
+        assertFalse(it.hasNext());
     }
 
 }
