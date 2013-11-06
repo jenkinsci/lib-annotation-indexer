@@ -27,11 +27,7 @@ public class Index {
         final Iterable<AnnotatedElement> base = list(type,cl);
         return new Iterable<T>() {
             public Iterator<T> iterator() {
-                return new FilterIterator(base.iterator()) {
-                    protected boolean filter(Object o) {
-                        return subType.isInstance(o);
-                    }
-                };
+                return new SubtypeIterator<AnnotatedElement,T>(base.iterator(), subType);
             }
         };
     }
