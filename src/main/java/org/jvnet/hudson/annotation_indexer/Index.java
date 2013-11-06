@@ -2,6 +2,7 @@ package org.jvnet.hudson.annotation_indexer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -47,10 +48,16 @@ public class Index {
         final Enumeration<URL> res = cl.getResources("META-INF/annotations/"+type.getName());
         while (res.hasMoreElements()) {
             URL url = res.nextElement();
-            BufferedReader r = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-            String line;
-            while ((line=r.readLine())!=null)
-                ids.add(line);
+            InputStream is = url.openStream();
+            try {
+                BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                String line;
+                while ((line = r.readLine()) != null) {
+                    ids.add(line);
+                }
+            } finally {
+                is.close();
+            }
         }
 
         return new Iterable<AnnotatedElement>() {
@@ -61,9 +68,9 @@ public class Index {
                      */
                     private AnnotatedElement next;
 
-                    private Iterator<String> iditr = ids.iterator();
+                    private final Iterator<String> iditr = ids.iterator();
 
-                    private List<AnnotatedElement> lookaheads = new LinkedList<AnnotatedElement>();
+                    private final List<AnnotatedElement> lookaheads = new LinkedList<AnnotatedElement>();
 
                     public boolean hasNext() {
                         fetch();
@@ -118,5 +125,8 @@ public class Index {
         };
     }
 
+    private Index() {}
+
     private static final Logger LOGGER = Logger.getLogger(Index.class.getName());
+
 }
