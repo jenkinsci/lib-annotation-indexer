@@ -101,6 +101,7 @@ public class Index {
                                     lookaheads.add(c);
                                 listAnnotatedElements(c.getDeclaredMethods());
                                 listAnnotatedElements(c.getDeclaredFields());
+                                listAnnotatedElements(c.getDeclaredConstructors());
                             } catch (ClassNotFoundException e) {
                                 LOGGER.log(Level.FINE, "Failed to load: "+name,e);
                             } catch (LinkageError x) {

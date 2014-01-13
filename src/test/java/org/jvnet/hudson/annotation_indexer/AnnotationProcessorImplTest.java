@@ -5,6 +5,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -94,6 +96,16 @@ public class AnnotationProcessorImplTest {
         assertTrue(it.hasNext());
         m = it.next();
         assertEquals("whatever", m.getName());
+        assertFalse(it.hasNext());
+    }
+
+    @Indexed @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.CONSTRUCTOR) public @interface OnConst {}
+    public static class Stuff {@OnConst public Stuff() {}}
+    @Test public void constructors() throws Exception {
+        Iterator<AnnotatedElement> it = Index.list(OnConst.class, Stuff.class.getClassLoader()).iterator();
+        assertTrue(it.hasNext());
+        Constructor<?> c = (Constructor) it.next();
+        assertEquals(Stuff.class, c.getDeclaringClass());
         assertFalse(it.hasNext());
     }
 

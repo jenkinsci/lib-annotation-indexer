@@ -79,6 +79,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 break;
             case METHOD:
             case FIELD:
+            case CONSTRUCTOR:
                 t = (TypeElement) elt.getEnclosingElement();
                 break;
             default:
