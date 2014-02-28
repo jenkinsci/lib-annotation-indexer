@@ -142,13 +142,17 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (roundEnv.processingOver() || roundEnv.errorRaised())
             return false;
-        
+
+        execute(annotations, roundEnv);
+        return false;
+    }
+
+    protected void execute(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // map from indexable annotation names, to actual uses
         Map<String,Use> output = new HashMap<String,Use>();
         scan(annotations, roundEnv, output);
         for (Use u : output.values())
             u.write();
-        return false;
     }
 
     protected AnnotationMirror findAnnotationOn(Element e, String name) {
