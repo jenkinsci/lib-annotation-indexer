@@ -161,9 +161,9 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
     private void scan(Set<? extends TypeElement> annotations,
             RoundEnvironment roundEnv, Map<String,Use> output) {
         for (TypeElement ann : annotations) {
-            AnnotationMirror indexed = findAnnotationOn(ann,Indexed.class.getName());
-            if (indexed == null)
+            if (!isIndexing(ann))
                 continue;   // not indexed
+
 
             AnnotationMirror retention = findAnnotationOn(ann, Retention.class.getName());
             if (retention == null) {
@@ -186,6 +186,15 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 o.add(elt);
             }
         }
+    }
+
+    /**
+     * Given a {@link TypeElement} that represents the annotation class,
+     * determines whether to index this annotation.
+     */
+    protected boolean isIndexing(TypeElement ann) {
+        AnnotationMirror indexed = findAnnotationOn(ann,Indexed.class.getName());
+        return indexed!=null;
     }
 
 
