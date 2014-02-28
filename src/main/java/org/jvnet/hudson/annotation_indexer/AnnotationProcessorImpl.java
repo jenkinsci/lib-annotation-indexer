@@ -134,7 +134,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         }
     }
 
-    private Elements getElementUtils() {
+    protected Elements getElementUtils() {
         return processingEnv.getElementUtils();
     }
 
@@ -151,7 +151,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         return false;
     }
 
-    private AnnotationMirror findAnnotationOn(Element e, String name) {
+    protected AnnotationMirror findAnnotationOn(Element e, String name) {
         for (AnnotationMirror a : getElementUtils().getAllAnnotationMirrors(e))
             if (getElementUtils().getBinaryName((TypeElement) a.getAnnotationType().asElement()).contentEquals(name))
                 return a;
