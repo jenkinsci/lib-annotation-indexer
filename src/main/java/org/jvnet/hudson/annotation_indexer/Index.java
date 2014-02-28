@@ -36,8 +36,9 @@ public class Index {
      * Lists up all the elements annotated by the given annotation.
      */
     public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
-        if (!type.isAnnotationPresent(Indexed.class))
-            throw new IllegalArgumentException(type+" doesn't have @Indexed");
+// To allow annotations defined by 3rd parties to be indexable, skip this check
+//        if (!type.isAnnotationPresent(Indexed.class))
+//            throw new IllegalArgumentException(type+" doesn't have @Indexed");
 
         final Set<String> ids = new TreeSet<String>();
 
