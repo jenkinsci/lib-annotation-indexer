@@ -141,6 +141,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (roundEnv.processingOver() || roundEnv.errorRaised())
+            // TODO we should not write until processingOver
             return false;
 
         execute(annotations, roundEnv);
