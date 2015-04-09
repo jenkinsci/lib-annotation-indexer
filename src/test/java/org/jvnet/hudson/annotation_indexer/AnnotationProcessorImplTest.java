@@ -28,7 +28,7 @@ public class AnnotationProcessorImplTest {
                 addLine("@some.api.A public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
         assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/some.api.A"));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/some.api.A"));
     }
 
     @Indexed @Retention(RetentionPolicy.RUNTIME) public @interface A {}
@@ -39,7 +39,7 @@ public class AnnotationProcessorImplTest {
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
         assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
     @Test public void incremental() {
@@ -49,14 +49,14 @@ public class AnnotationProcessorImplTest {
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
         assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
         compilation = new Compilation(compilation);
         compilation.addSource("some.pkg.MoreStuff").
                 addLine("package some.pkg;").
                 addLine("@" + A.class.getCanonicalName() + " public class MoreStuff {}");
         compilation.doCompile(null, "-source", "6");
         assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.MoreStuff\nsome.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.MoreStuff" + System.getProperty("line.separator") + "some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
     @Indexed @Retention(RetentionPolicy.RUNTIME) @Inherited public @interface B {}
