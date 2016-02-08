@@ -111,6 +111,8 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 }
             } catch (FileNotFoundException x) {
                 // OK, created for the first time
+            } catch (java.nio.file.NoSuchFileException x) {
+                // OK, created for the first time
             }
             return elements;
         }
