@@ -27,7 +27,7 @@ public class AnnotationProcessorImplTest {
                 addLine("package some.pkg;").
                 addLine("@some.api.A public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/some.api.A"));
     }
 
@@ -38,7 +38,7 @@ public class AnnotationProcessorImplTest {
                 addLine("package some.pkg;").
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
@@ -48,14 +48,14 @@ public class AnnotationProcessorImplTest {
                 addLine("package some.pkg;").
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
         compilation = new Compilation(compilation);
         compilation.addSource("some.pkg.MoreStuff").
                 addLine("package some.pkg;").
                 addLine("@" + A.class.getCanonicalName() + " public class MoreStuff {}");
         compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         assertEquals("some.pkg.MoreStuff" + System.getProperty("line.separator") + "some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
@@ -67,7 +67,7 @@ public class AnnotationProcessorImplTest {
                 addLine("package some.pkg;").
                 addLine("public class Stuff extends " + Super.class.getCanonicalName() + " {}");
         compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterSupportedSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         /* XXX #7188605 currently broken on JDK 6; perhaps need to use a ElementScanner6 on roundEnv.rootElements whose visitType checks for annotations
         assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + B.class.getName()));
         */
