@@ -6,8 +6,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import static javax.lang.model.SourceVersion.RELEASE_6;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -35,7 +34,6 @@ import java.util.TreeSet;
  *
  * @author Kohsuke Kawaguchi
  */
-@SupportedSourceVersion(RELEASE_6)
 @SupportedAnnotationTypes("*")
 @SuppressWarnings({"Since15"})
 @MetaInfServices(Processor.class)
@@ -148,6 +146,11 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
         execute(annotations, roundEnv);
         return false;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
     }
 
     protected void execute(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
