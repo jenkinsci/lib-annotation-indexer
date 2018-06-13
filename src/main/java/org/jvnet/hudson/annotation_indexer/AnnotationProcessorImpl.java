@@ -9,6 +9,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
@@ -81,9 +82,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 t = (TypeElement) elt.getEnclosingElement();
                 break;
             case PACKAGE:
-                for (Element element : elt.getEnclosedElements()) {
-                    add(element);
-                }
+                classes.add(((PackageElement)elt).getQualifiedName().toString());
                 return;
 
             default:

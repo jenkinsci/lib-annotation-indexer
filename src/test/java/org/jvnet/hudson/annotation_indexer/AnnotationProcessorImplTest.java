@@ -52,7 +52,7 @@ public class AnnotationProcessorImplTest {
                 addLine("public class Stuff {}");
         compilation.doCompile(null, "-source", "6");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
 
