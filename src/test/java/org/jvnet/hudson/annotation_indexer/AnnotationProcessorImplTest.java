@@ -42,6 +42,21 @@ public class AnnotationProcessorImplTest {
         assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
 
+    @Test public void packageinfo() {
+        Compilation compilation = new Compilation();
+        compilation.addSource("some.pkg.package-info").
+                addLine("@" + A.class.getCanonicalName()).
+                addLine("package some.pkg;");
+        compilation.addSource("some.pkg.Stuff").
+                addLine("package some.pkg;").
+                addLine("public class Stuff {}");
+        compilation.doCompile(null, "-source", "6");
+        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+    }
+
+
+
     @Test public void incremental() {
         Compilation compilation = new Compilation();
         compilation.addSource("some.pkg.Stuff").

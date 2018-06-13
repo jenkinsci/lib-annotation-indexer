@@ -80,6 +80,12 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             case CONSTRUCTOR:
                 t = (TypeElement) elt.getEnclosingElement();
                 break;
+            case PACKAGE:
+                for (Element element : elt.getEnclosedElements()) {
+                    add(element);
+                }
+                return;
+
             default:
 //                throw new AssertionError(elt.getKind());
                 return;
