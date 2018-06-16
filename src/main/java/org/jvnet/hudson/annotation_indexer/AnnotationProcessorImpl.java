@@ -82,7 +82,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 t = (TypeElement) elt.getEnclosingElement();
                 break;
             case PACKAGE:
-                classes.add(((PackageElement)elt).getQualifiedName().toString());
+                classes.add(((PackageElement)elt).getQualifiedName().toString()+".*");
                 return;
 
             default:

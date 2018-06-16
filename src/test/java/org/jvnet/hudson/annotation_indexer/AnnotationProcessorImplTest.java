@@ -1,5 +1,6 @@
 package org.jvnet.hudson.annotation_indexer;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -41,21 +42,6 @@ public class AnnotationProcessorImplTest {
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
     }
-
-    @Test public void packageinfo() {
-        Compilation compilation = new Compilation();
-        compilation.addSource("some.pkg.package-info").
-                addLine("@" + A.class.getCanonicalName()).
-                addLine("package some.pkg;");
-        compilation.addSource("some.pkg.Stuff").
-                addLine("package some.pkg;").
-                addLine("public class Stuff {}");
-        compilation.doCompile(null, "-source", "6");
-        assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
-    }
-
-
 
     @Test public void incremental() {
         Compilation compilation = new Compilation();
@@ -122,6 +108,15 @@ public class AnnotationProcessorImplTest {
         Constructor<?> c = (Constructor) it.next();
         assertEquals(Stuff.class, c.getDeclaringClass());
         assertFalse(it.hasNext());
+    }
+
+
+    @Indexed @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.PACKAGE) public @interface OnPackage {}
+    @Test public void packageinfo() throws IOException {
+        Iterator<AnnotatedElement> it = Index.list(OnPackage.class, Stuff.class.getClassLoader()).iterator();
+        assertTrue(it.hasNext());
+        final Package p = (Package) it.next();
+        assertEquals("org.jvnet.hudson.annotation_indexer", p.getName());
     }
 
 }
