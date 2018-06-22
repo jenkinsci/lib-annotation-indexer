@@ -46,17 +46,12 @@ public class Index {
         while (res.hasMoreElements()) {
             URL url = res.nextElement();
             InputStream is = url.openStream();
-            BufferedReader r = null;
-            try {
-                r = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
                 String line;
                 while ((line = r.readLine()) != null) {
                     ids.add(line);
                 }
             } finally {
-                if (r != null) {
-                    r.close();
-                }
                 is.close();
             }
         }

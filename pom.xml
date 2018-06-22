@@ -15,6 +15,11 @@
     Creates index of annotations.
   </description>
 
+  <properties>
+    <java.level>8</java.level>
+    <java.level.test>8</java.level.test>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>
