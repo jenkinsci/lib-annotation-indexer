@@ -45,14 +45,13 @@ public class Index {
         final Enumeration<URL> res = cl.getResources("META-INF/annotations/"+type.getName());
         while (res.hasMoreElements()) {
             URL url = res.nextElement();
-            InputStream is = url.openStream();
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+
+            try (InputStream is = url.openStream();
+                 BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
                 String line;
                 while ((line = r.readLine()) != null) {
                     ids.add(line);
                 }
-            } finally {
-                is.close();
             }
         }
 
