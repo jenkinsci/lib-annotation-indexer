@@ -24,8 +24,7 @@ class Utils {
     // Filter out warnings about source 1.6 is obsolete in java 9
     // This usually appears with other warnings
     public static final List<String> IGNORE = Arrays.asList(
-            "source value 1.6 is obsolete and will be removed in a future release", // Filter out warnings about source 1.6 is obsolete in java 9
-            "To suppress warnings about obsolete options" // This usually appears with other warnings
+            "RELEASE_6" // Filter out warnings about source 1.6 is obsolete in java 9+
     );
 
     public static List<Diagnostic<? extends JavaFileObject>> filterObsoleteSourceVersionWarnings(List<Diagnostic<? extends JavaFileObject>> diagnostics) {

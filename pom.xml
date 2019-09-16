@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jenkins-ci</groupId>
     <artifactId>jenkins</artifactId>
-    <version>1.37</version>
+    <version>1.46</version>
     <relativePath />
   </parent>
 
@@ -15,11 +15,16 @@
     Creates index of annotations.
   </description>
 
+  <properties>
+    <java.level>8</java.level>
+    <java.level.test>8</java.level.test>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kohsuke.metainf-services</groupId>
       <artifactId>metainf-services</artifactId>
-      <version>1.7</version>
+      <version>1.8</version>
       <optional>true</optional>
     </dependency>
     <dependency>
