@@ -96,6 +96,11 @@ public class Index {
                             String name = iditr.next();
 
                             try {
+                                if (name.endsWith(".*")) {
+                                    final Package p = Package.getPackage(name.substring(0, name.length() - 2));
+                                    lookaheads.add(p);
+                                }
+
                                 Class<?> c = cl.loadClass(name);
 
                                 if (c.isAnnotationPresent(type))

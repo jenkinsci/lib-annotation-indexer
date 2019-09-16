@@ -1,5 +1,6 @@
 package org.jvnet.hudson.annotation_indexer;
 
+import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -107,6 +108,15 @@ public class AnnotationProcessorImplTest {
         Constructor<?> c = (Constructor) it.next();
         assertEquals(Stuff.class, c.getDeclaringClass());
         assertFalse(it.hasNext());
+    }
+
+
+    @Indexed @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.PACKAGE) public @interface OnPackage {}
+    @Test public void packageinfo() throws IOException {
+        Iterator<AnnotatedElement> it = Index.list(OnPackage.class, Stuff.class.getClassLoader()).iterator();
+        assertTrue(it.hasNext());
+        final Package p = (Package) it.next();
+        assertEquals("org.jvnet.hudson.annotation_indexer", p.getName());
     }
 
 }
