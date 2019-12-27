@@ -10,7 +10,7 @@
 
   <artifactId>annotation-indexer</artifactId>
   <name>Annotation Indexer</name>
-  <version>1.13-SNAPSHOT</version>
+  <version>1.13</version>
   <description>
     Creates index of annotations.
   </description>
@@ -44,7 +44,7 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/lib-${project.artifactId}.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/lib-${project.artifactId}.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>annotation-indexer-1.13</tag>
   </scm>
 
   <licenses>
