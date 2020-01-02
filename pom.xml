@@ -44,6 +44,7 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/lib-${project.artifactId}.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/lib-${project.artifactId}.git</developerConnection>
+    <url>https://github.com/jenkinsci/lib-annotation-indexer</url>
     <tag>HEAD</tag>
   </scm>
 
