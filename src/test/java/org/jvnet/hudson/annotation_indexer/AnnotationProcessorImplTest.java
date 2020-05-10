@@ -29,7 +29,7 @@ public class AnnotationProcessorImplTest {
                 addLine("@some.api.A public class Stuff {}");
         compilation.doCompile(null, "-source", "8");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/some.api.A"));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/services/annotations/some.api.A"));
     }
 
     @Indexed @Retention(RetentionPolicy.RUNTIME) public @interface A {}
@@ -40,7 +40,7 @@ public class AnnotationProcessorImplTest {
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "8");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/services/annotations/" + A.class.getName()));
     }
 
     @Test public void incremental() {
@@ -50,14 +50,14 @@ public class AnnotationProcessorImplTest {
                 addLine("@" + A.class.getCanonicalName() + " public class Stuff {}");
         compilation.doCompile(null, "-source", "8");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/services/annotations/" + A.class.getName()));
         compilation = new Compilation(compilation);
         compilation.addSource("some.pkg.MoreStuff").
                 addLine("package some.pkg;").
                 addLine("@" + A.class.getCanonicalName() + " public class MoreStuff {}");
         compilation.doCompile(null, "-source", "8");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
-        assertEquals("some.pkg.MoreStuff" + System.getProperty("line.separator") + "some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/annotations/" + A.class.getName()));
+        assertEquals("some.pkg.MoreStuff" + System.getProperty("line.separator") + "some.pkg.Stuff" + System.getProperty("line.separator"), Utils.getGeneratedResource(compilation, "META-INF/services/annotations/" + A.class.getName()));
     }
 
     @Indexed @Retention(RetentionPolicy.RUNTIME) @Inherited public @interface B {}
@@ -70,7 +70,7 @@ public class AnnotationProcessorImplTest {
         compilation.doCompile(null, "-source", "8");
         assertEquals(Collections.emptyList(), Utils.filterObsoleteSourceVersionWarnings(compilation.getDiagnostics()));
         /* XXX #7188605 currently broken on JDK 6; perhaps need to use a ElementScanner6 on roundEnv.rootElements whose visitType checks for annotations
-        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/annotations/" + B.class.getName()));
+        assertEquals("some.pkg.Stuff\n", Utils.getGeneratedResource(compilation, "META-INF/services/annotations/" + B.class.getName()));
         */
     }
 

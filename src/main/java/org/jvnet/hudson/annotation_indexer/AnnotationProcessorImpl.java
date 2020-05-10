@@ -93,7 +93,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         }
 
         String getIndexFileName() {
-            return "META-INF/annotations/" + annotationName;
+            return "META-INF/services/annotations/" + annotationName;
         }
 
         /**
