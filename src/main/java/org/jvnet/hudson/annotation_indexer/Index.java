@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,6 +21,14 @@ import java.util.logging.Logger;
  * @author Kohsuke Kawaguchi
  */
 public class Index {
+    /**
+     * Resource path in which we look up the index.
+     *
+     * <p>
+     * Historically we put things under META-INF/annotations.
+     */
+    private static final List<String> PREFIXES = Arrays.asList("META-INF/annotations/", "META-INF/services/annotations/");
+
     /**
      * Lists up all the elements annotated by the given annotation and of the given {@link AnnotatedElement} subtype.
      */
@@ -42,15 +51,17 @@ public class Index {
 
         final Set<String> ids = new TreeSet<String>();
 
-        final Enumeration<URL> res = cl.getResources("META-INF/annotations/"+type.getName());
-        while (res.hasMoreElements()) {
-            URL url = res.nextElement();
+        for (String prefix : PREFIXES) {
+            final Enumeration<URL> res = cl.getResources(prefix + type.getName());
+            while (res.hasMoreElements()) {
+                URL url = res.nextElement();
 
-            try (InputStream is = url.openStream();
-                 BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
-                String line;
-                while ((line = r.readLine()) != null) {
-                    ids.add(line);
+                try (InputStream is = url.openStream();
+                     BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        ids.add(line);
+                    }
                 }
             }
         }
