@@ -42,14 +42,16 @@ public class Index {
     }
 
     /**
-     * Lists up all the elements annotated by the given annotation.
+     * Lists the names of classes annotated by the given annotation.
+     * Typically you should use {@link #list(Class, ClassLoader, Class)} instead,
+     * but this lower-level method can be used for clients doing bytecode inspection or manipulation rather than class loading.
      */
-    public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
+    public static Set<String> listClassNames(Class<? extends Annotation> type, ClassLoader cl) throws IOException {
 // To allow annotations defined by 3rd parties to be indexable, skip this check
 //        if (!type.isAnnotationPresent(Indexed.class))
 //            throw new IllegalArgumentException(type+" doesn't have @Indexed");
 
-        final Set<String> ids = new TreeSet<String>();
+        Set<String> ids = new TreeSet<>();
 
         for (String prefix : PREFIXES) {
             final Enumeration<URL> res = cl.getResources(prefix + type.getName());
@@ -66,6 +68,14 @@ public class Index {
             }
         }
 
+        return ids;
+    }
+
+    /**
+     * Lists up all the elements annotated by the given annotation.
+     */
+    public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
+        Set<String> ids = listClassNames(type, cl);
         return new Iterable<AnnotatedElement>() {
             public Iterator<AnnotatedElement> iterator() {
                 return new Iterator<AnnotatedElement>() {
