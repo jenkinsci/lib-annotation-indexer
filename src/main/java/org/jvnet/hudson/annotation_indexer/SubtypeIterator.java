@@ -24,11 +24,13 @@ final class SubtypeIterator<T,U extends T> implements Iterator<U> {
         }
     }
 
+    @Override
     public boolean hasNext() {
         fetch();
         return fetched;
     }
 
+    @Override
     public U next() {
         fetch();
         if(!fetched)  throw new NoSuchElementException();
@@ -36,6 +38,7 @@ final class SubtypeIterator<T,U extends T> implements Iterator<U> {
         return type.cast(next);
     }
 
+    @Override
     public void remove() {
         core.remove();
     }

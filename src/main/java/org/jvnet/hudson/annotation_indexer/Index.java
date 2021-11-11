@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -35,8 +36,9 @@ public class Index {
     public static <T extends AnnotatedElement> Iterable<T> list(Class<? extends Annotation> type, ClassLoader cl, final Class<T> subType) throws IOException {
         final Iterable<AnnotatedElement> base = list(type,cl);
         return new Iterable<T>() {
+            @Override
             public Iterator<T> iterator() {
-                return new SubtypeIterator<AnnotatedElement,T>(base.iterator(), subType);
+                return new SubtypeIterator<>(base.iterator(), subType);
             }
         };
     }
@@ -59,7 +61,7 @@ public class Index {
                 URL url = res.nextElement();
 
                 try (InputStream is = url.openStream();
-                     BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+                     BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = r.readLine()) != null) {
                         ids.add(line);
@@ -77,6 +79,7 @@ public class Index {
     public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
         Set<String> ids = listClassNames(type, cl);
         return new Iterable<AnnotatedElement>() {
+            @Override
             public Iterator<AnnotatedElement> iterator() {
                 return new Iterator<AnnotatedElement>() {
                     /**
@@ -86,13 +89,15 @@ public class Index {
 
                     private final Iterator<String> iditr = ids.iterator();
 
-                    private final List<AnnotatedElement> lookaheads = new LinkedList<AnnotatedElement>();
+                    private final List<AnnotatedElement> lookaheads = new LinkedList<>();
 
+                    @Override
                     public boolean hasNext() {
                         fetch();
                         return next!=null;
                     }
 
+                    @Override
                     public AnnotatedElement next() {
                         fetch();
                         AnnotatedElement r = next;
@@ -100,6 +105,7 @@ public class Index {
                         return r;
                     }
 
+                    @Override
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
@@ -129,9 +135,7 @@ public class Index {
                                 listAnnotatedElements(c.getDeclaredConstructors());
                             } catch (ClassNotFoundException e) {
                                 LOGGER.log(Level.FINE, "Failed to load: "+name,e);
-                            } catch (LinkageError x) {
-                                LOGGER.log(Level.WARNING, "Failed to load " + name, x);
-                            } catch (RuntimeException x) {
+                            } catch (LinkageError | RuntimeException x) {
                                 LOGGER.log(Level.WARNING, "Failed to load " + name, x);
                             }
                         }

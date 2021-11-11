@@ -15,7 +15,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import net.java.dev.hickory.testing.Compilation;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AnnotationProcessorImplTest {
 
@@ -105,7 +107,7 @@ public class AnnotationProcessorImplTest {
     @Test public void constructors() throws Exception {
         Iterator<AnnotatedElement> it = Index.list(OnConst.class, Stuff.class.getClassLoader()).iterator();
         assertTrue(it.hasNext());
-        Constructor<?> c = (Constructor) it.next();
+        Constructor<?> c = (Constructor<?>) it.next();
         assertEquals(Stuff.class, c.getDeclaringClass());
         assertFalse(it.hasNext());
     }

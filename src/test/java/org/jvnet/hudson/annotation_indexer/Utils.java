@@ -2,15 +2,11 @@ package org.jvnet.hudson.annotation_indexer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
-import java.util.TreeMap;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -23,12 +19,12 @@ class Utils {
 
     // Filter out warnings about source 1.6 is obsolete in java 9
     // This usually appears with other warnings
-    public static final List<String> IGNORE = Arrays.asList(
+    public static final List<String> IGNORE = Collections.singletonList(
             "RELEASE_6" // Filter out warnings about source 1.6 is obsolete in java 9+
     );
 
     public static List<Diagnostic<? extends JavaFileObject>> filterObsoleteSourceVersionWarnings(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
-        List<Diagnostic<? extends JavaFileObject>> r = new ArrayList<Diagnostic<? extends JavaFileObject>>();
+        List<Diagnostic<? extends JavaFileObject>> r = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> d : diagnostics) {
             if (!isIgnored(d.getMessage(Locale.ENGLISH))) {
                 r.add(d);

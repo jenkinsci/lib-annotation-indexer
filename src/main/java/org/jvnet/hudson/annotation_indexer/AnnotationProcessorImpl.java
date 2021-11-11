@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,11 +52,11 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         /**
          * Strings that designate FQCNs where annotations are used, either on a class or its members.
          */
-        final Set<String> classes = new TreeSet<String>();
+        final Set<String> classes = new TreeSet<>();
         /**
          * Keeps track of elements that has the annotation.
          */
-        final Set<Element> originatingElements = new HashSet<Element>();
+        final Set<Element> originatingElements = new HashSet<>();
 
         private Use(String annotationName) {
             this.annotationName = annotationName;
@@ -100,21 +102,16 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
          * Loads existing index, if it exists.
          */
         List<String> loadExisting() throws IOException {
-            List<String> elements = new ArrayList<String>();
+            List<String> elements = new ArrayList<>();
             try {
                 FileObject in = processingEnv.getFiler().getResource(CLASS_OUTPUT, "", getIndexFileName());
                 // Read existing annotations, for incremental compilation.
-                BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(),"UTF-8"));
-                try {
+                try (BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line=is.readLine())!=null)
                         elements.add(line);
-                } finally {
-                    is.close();
                 }
-            } catch (FileNotFoundException x) {
-                // OK, created for the first time
-            } catch (java.nio.file.NoSuchFileException x) {
+            } catch (FileNotFoundException | NoSuchFileException x) {
                 // OK, created for the first time
             }
             return elements;
@@ -124,14 +121,11 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             try {
                 FileObject out = processingEnv.getFiler().createResource(CLASS_OUTPUT,
                         "", getIndexFileName(),
-                        originatingElements.toArray(new Element[originatingElements.size()]));
+                        originatingElements.toArray(new Element[0]));
 
-                PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(),"UTF-8"));
-                try {
+                try (PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(), StandardCharsets.UTF_8))) {
                     for (String el : classes)
                         w.println(el);
-                } finally {
-                    w.close();
                 }
             } catch (IOException x) {
                 processingEnv.getMessager().printMessage(Kind.ERROR, x.toString());
@@ -160,7 +154,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
     protected void execute(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // map from indexable annotation names, to actual uses
-        Map<String,Use> output = new HashMap<String,Use>();
+        Map<String,Use> output = new HashMap<>();
         scan(annotations, roundEnv, output);
         for (Use u : output.values())
             u.write();
