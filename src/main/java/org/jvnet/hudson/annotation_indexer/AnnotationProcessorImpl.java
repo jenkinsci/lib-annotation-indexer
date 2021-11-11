@@ -106,13 +106,10 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             try {
                 FileObject in = processingEnv.getFiler().getResource(CLASS_OUTPUT, "", getIndexFileName());
                 // Read existing annotations, for incremental compilation.
-                BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(), StandardCharsets.UTF_8));
-                try {
+                try (BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(), StandardCharsets.UTF_8))) {
                     String line;
                     while ((line=is.readLine())!=null)
                         elements.add(line);
-                } finally {
-                    is.close();
                 }
             } catch (FileNotFoundException | NoSuchFileException x) {
                 // OK, created for the first time
@@ -126,12 +123,9 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                         "", getIndexFileName(),
                         originatingElements.toArray(new Element[originatingElements.size()]));
 
-                PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(), StandardCharsets.UTF_8));
-                try {
+                try (PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(), StandardCharsets.UTF_8))) {
                     for (String el : classes)
                         w.println(el);
-                } finally {
-                    w.close();
                 }
             } catch (IOException x) {
                 processingEnv.getMessager().printMessage(Kind.ERROR, x.toString());
