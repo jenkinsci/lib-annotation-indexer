@@ -121,7 +121,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             try {
                 FileObject out = processingEnv.getFiler().createResource(CLASS_OUTPUT,
                         "", getIndexFileName(),
-                        originatingElements.toArray(new Element[originatingElements.size()]));
+                        originatingElements.toArray(new Element[0]));
 
                 try (PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(), StandardCharsets.UTF_8))) {
                     for (String el : classes)
