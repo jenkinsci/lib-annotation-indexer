@@ -5,7 +5,7 @@ It is used inside the [Jenkins project](http://jenkins.io), but it can be also u
 
 ## Javadoc
 
-To be published soon, see https://github.com/jenkins-infra/javadoc/pull/22
+Javadoc is published [here](https://javadoc.jenkins.io/component/annotation-indexer/)
 
 ## Changelog
 
