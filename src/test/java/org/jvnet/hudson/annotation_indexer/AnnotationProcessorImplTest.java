@@ -105,7 +105,7 @@ public class AnnotationProcessorImplTest {
     @Test public void constructors() throws Exception {
         Iterator<AnnotatedElement> it = Index.list(OnConst.class, Stuff.class.getClassLoader()).iterator();
         assertTrue(it.hasNext());
-        Constructor<?> c = (Constructor) it.next();
+        Constructor<?> c = (Constructor<?>) it.next();
         assertEquals(Stuff.class, c.getDeclaringClass());
         assertFalse(it.hasNext());
     }
