@@ -36,6 +36,7 @@ public class Index {
     public static <T extends AnnotatedElement> Iterable<T> list(Class<? extends Annotation> type, ClassLoader cl, final Class<T> subType) throws IOException {
         final Iterable<AnnotatedElement> base = list(type,cl);
         return new Iterable<T>() {
+            @Override
             public Iterator<T> iterator() {
                 return new SubtypeIterator<>(base.iterator(), subType);
             }
@@ -78,6 +79,7 @@ public class Index {
     public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
         Set<String> ids = listClassNames(type, cl);
         return new Iterable<AnnotatedElement>() {
+            @Override
             public Iterator<AnnotatedElement> iterator() {
                 return new Iterator<AnnotatedElement>() {
                     /**
@@ -89,11 +91,13 @@ public class Index {
 
                     private final List<AnnotatedElement> lookaheads = new LinkedList<>();
 
+                    @Override
                     public boolean hasNext() {
                         fetch();
                         return next!=null;
                     }
 
+                    @Override
                     public AnnotatedElement next() {
                         fetch();
                         AnnotatedElement r = next;
@@ -101,6 +105,7 @@ public class Index {
                         return r;
                     }
 
+                    @Override
                     public void remove() {
                         throw new UnsupportedOperationException();
                     }
