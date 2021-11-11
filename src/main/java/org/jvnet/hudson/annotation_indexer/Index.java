@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -59,7 +60,7 @@ public class Index {
                 URL url = res.nextElement();
 
                 try (InputStream is = url.openStream();
-                     BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+                     BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                     String line;
                     while ((line = r.readLine()) != null) {
                         ids.add(line);

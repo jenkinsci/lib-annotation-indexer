@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,7 +105,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
             try {
                 FileObject in = processingEnv.getFiler().getResource(CLASS_OUTPUT, "", getIndexFileName());
                 // Read existing annotations, for incremental compilation.
-                BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(),"UTF-8"));
+                BufferedReader is = new BufferedReader(new InputStreamReader(in.openInputStream(), StandardCharsets.UTF_8));
                 try {
                     String line;
                     while ((line=is.readLine())!=null)
@@ -126,7 +127,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                         "", getIndexFileName(),
                         originatingElements.toArray(new Element[originatingElements.size()]));
 
-                PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(),"UTF-8"));
+                PrintWriter w = new PrintWriter(new OutputStreamWriter(out.openOutputStream(), StandardCharsets.UTF_8));
                 try {
                     for (String el : classes)
                         w.println(el);
