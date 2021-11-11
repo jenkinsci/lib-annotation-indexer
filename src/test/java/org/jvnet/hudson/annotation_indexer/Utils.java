@@ -2,15 +2,11 @@ package org.jvnet.hudson.annotation_indexer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
-import java.util.TreeMap;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
