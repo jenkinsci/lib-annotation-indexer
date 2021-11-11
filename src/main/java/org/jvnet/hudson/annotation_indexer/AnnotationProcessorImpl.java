@@ -51,11 +51,11 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
         /**
          * Strings that designate FQCNs where annotations are used, either on a class or its members.
          */
-        final Set<String> classes = new TreeSet<String>();
+        final Set<String> classes = new TreeSet<>();
         /**
          * Keeps track of elements that has the annotation.
          */
-        final Set<Element> originatingElements = new HashSet<Element>();
+        final Set<Element> originatingElements = new HashSet<>();
 
         private Use(String annotationName) {
             this.annotationName = annotationName;
@@ -101,7 +101,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
          * Loads existing index, if it exists.
          */
         List<String> loadExisting() throws IOException {
-            List<String> elements = new ArrayList<String>();
+            List<String> elements = new ArrayList<>();
             try {
                 FileObject in = processingEnv.getFiler().getResource(CLASS_OUTPUT, "", getIndexFileName());
                 // Read existing annotations, for incremental compilation.
@@ -161,7 +161,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
 
     protected void execute(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         // map from indexable annotation names, to actual uses
-        Map<String,Use> output = new HashMap<String,Use>();
+        Map<String,Use> output = new HashMap<>();
         scan(annotations, roundEnv, output);
         for (Use u : output.values())
             u.write();

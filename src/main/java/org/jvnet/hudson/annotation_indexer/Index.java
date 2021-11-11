@@ -37,7 +37,7 @@ public class Index {
         final Iterable<AnnotatedElement> base = list(type,cl);
         return new Iterable<T>() {
             public Iterator<T> iterator() {
-                return new SubtypeIterator<AnnotatedElement,T>(base.iterator(), subType);
+                return new SubtypeIterator<>(base.iterator(), subType);
             }
         };
     }
@@ -87,7 +87,7 @@ public class Index {
 
                     private final Iterator<String> iditr = ids.iterator();
 
-                    private final List<AnnotatedElement> lookaheads = new LinkedList<AnnotatedElement>();
+                    private final List<AnnotatedElement> lookaheads = new LinkedList<>();
 
                     public boolean hasNext() {
                         fetch();

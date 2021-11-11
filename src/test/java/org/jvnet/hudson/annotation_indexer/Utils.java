@@ -28,7 +28,7 @@ class Utils {
     );
 
     public static List<Diagnostic<? extends JavaFileObject>> filterObsoleteSourceVersionWarnings(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
-        List<Diagnostic<? extends JavaFileObject>> r = new ArrayList<Diagnostic<? extends JavaFileObject>>();
+        List<Diagnostic<? extends JavaFileObject>> r = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> d : diagnostics) {
             if (!isIgnored(d.getMessage(Locale.ENGLISH))) {
                 r.add(d);
