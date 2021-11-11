@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,9 +114,7 @@ public class AnnotationProcessorImpl extends AbstractProcessor {
                 } finally {
                     is.close();
                 }
-            } catch (FileNotFoundException x) {
-                // OK, created for the first time
-            } catch (java.nio.file.NoSuchFileException x) {
+            } catch (FileNotFoundException | NoSuchFileException x) {
                 // OK, created for the first time
             }
             return elements;

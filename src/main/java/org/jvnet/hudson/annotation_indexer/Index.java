@@ -130,9 +130,7 @@ public class Index {
                                 listAnnotatedElements(c.getDeclaredConstructors());
                             } catch (ClassNotFoundException e) {
                                 LOGGER.log(Level.FINE, "Failed to load: "+name,e);
-                            } catch (LinkageError x) {
-                                LOGGER.log(Level.WARNING, "Failed to load " + name, x);
-                            } catch (RuntimeException x) {
+                            } catch (LinkageError | RuntimeException x) {
                                 LOGGER.log(Level.WARNING, "Failed to load " + name, x);
                             }
                         }
