@@ -133,8 +133,8 @@ public class Index {
                                 listAnnotatedElements(c.getDeclaredMethods());
                                 listAnnotatedElements(c.getDeclaredFields());
                                 listAnnotatedElements(c.getDeclaredConstructors());
-                            } catch (ClassNotFoundException e) {
-                                LOGGER.log(Level.FINE, "Failed to load: "+name,e);
+                            } catch (ClassNotFoundException | NoClassDefFoundError x) {
+                                LOGGER.log(Level.FINE, "Failed to load: " + name, x);
                             } catch (LinkageError | RuntimeException x) {
                                 LOGGER.log(Level.WARNING, "Failed to load " + name, x);
                             }
