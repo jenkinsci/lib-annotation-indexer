@@ -10,14 +10,14 @@
 
   <artifactId>annotation-indexer</artifactId>
   <name>Annotation Indexer</name>
-  <version>1.16</version>
+  <version>${revision}${changelist}</version>
   <description>
     Creates index of annotations.
   </description>
   <url>https://github.com/jenkinsci/lib-${project.artifactId}</url>
 
   <properties>
-    <revision>1.16</revision>
+    <revision>1.17</revision>
     <changelist>-SNAPSHOT</changelist>
     <java.level>8</java.level>
     <gitHubRepo>jenkinsci/lib-${project.artifactId}</gitHubRepo>
@@ -47,7 +47,7 @@
     <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
     <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
     <url>https://github.com/${gitHubRepo}</url>
-    <tag>annotation-indexer-1.16</tag>
+    <tag>${scmTag}</tag>
   </scm>
 
   <licenses>
