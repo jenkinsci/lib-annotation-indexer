@@ -9,12 +9,24 @@
   </parent>
 
   <artifactId>annotation-indexer</artifactId>
-  <name>Annotation Indexer</name>
   <version>${revision}${changelist}</version>
-  <description>
-    Creates index of annotations.
-  </description>
+  <name>Annotation Indexer</name>
+  <description>Creates index of annotations.</description>
   <url>https://github.com/jenkinsci/lib-${project.artifactId}</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <tag>${scmTag}</tag>
+    <url>https://github.com/${gitHubRepo}</url>
+  </scm>
 
   <properties>
     <revision>1.17</revision>
@@ -42,20 +54,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
-    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
-    <url>https://github.com/${gitHubRepo}</url>
-    <tag>${scmTag}</tag>
-  </scm>
-
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>https://opensource.org/licenses/MIT</url>
-    </license>
-  </licenses>
 
   <repositories>
     <repository>
