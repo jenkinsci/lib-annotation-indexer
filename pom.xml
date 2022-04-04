@@ -31,7 +31,6 @@
   <properties>
     <revision>1.17</revision>
     <changelist>-SNAPSHOT</changelist>
-    <java.level>8</java.level>
     <gitHubRepo>jenkinsci/lib-${project.artifactId}</gitHubRepo>
   </properties>
 
