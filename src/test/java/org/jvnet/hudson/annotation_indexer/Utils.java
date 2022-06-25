@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.tools.Diagnostic;
@@ -19,7 +18,7 @@ class Utils {
 
     // Filter out warnings about source 1.6 is obsolete in java 9
     // This usually appears with other warnings
-    public static final List<String> IGNORE = Collections.singletonList(
+    public static final List<String> IGNORE = List.of(
             "RELEASE_6" // Filter out warnings about source 1.6 is obsolete in java 9+
     );
 
