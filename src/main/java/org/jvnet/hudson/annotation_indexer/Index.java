@@ -35,7 +35,7 @@ public class Index {
      */
     public static <T extends AnnotatedElement> Iterable<T> list(Class<? extends Annotation> type, ClassLoader cl, final Class<T> subType) throws IOException {
         final Iterable<AnnotatedElement> base = list(type,cl);
-        return new Iterable<T>() {
+        return new Iterable<>() {
             @Override
             public Iterator<T> iterator() {
                 return new SubtypeIterator<>(base.iterator(), subType);
@@ -78,10 +78,10 @@ public class Index {
      */
     public static Iterable<AnnotatedElement> list(final Class<? extends Annotation> type, final ClassLoader cl) throws IOException {
         Set<String> ids = listClassNames(type, cl);
-        return new Iterable<AnnotatedElement>() {
+        return new Iterable<>() {
             @Override
             public Iterator<AnnotatedElement> iterator() {
-                return new Iterator<AnnotatedElement>() {
+                return new Iterator<>() {
                     /**
                      * Next element to return.
                      */
