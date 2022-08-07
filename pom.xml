@@ -54,9 +54,9 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.jolira</groupId>
-      <artifactId>hickory</artifactId>
-      <version>1.0.0</version>
+      <groupId>com.karuslabs</groupId>
+      <artifactId>elementary</artifactId>
+      <version>1.1.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -75,6 +75,10 @@
     <repository>
       <id>repo.jenkins-ci.org</id>
       <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+    <repository>
+      <id>elementary-releases</id>
+      <url>https://repo.karuslabs.com/repository/elementary-releases/</url>
     </repository>
   </repositories>
 
