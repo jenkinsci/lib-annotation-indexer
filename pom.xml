@@ -29,7 +29,7 @@
   </scm>
 
   <properties>
-    <revision>1.20</revision>
+    <revision>1.19</revision>
     <changelist>-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/lib-${project.artifactId}</gitHubRepo>
     <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
